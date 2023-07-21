@@ -16,6 +16,9 @@ type LensGetter s a = s -> a
 xGetter :: LensGetter Foo Int
 xGetter = _x
 
+dataGetter :: LensGetter Bar String
+dataGetter = _data
+
 (^.) :: s -> LensGetter s a -> a
 s ^. f = f s
 
