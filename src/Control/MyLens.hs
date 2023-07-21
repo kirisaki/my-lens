@@ -13,8 +13,13 @@ data Bar = Bar
 
 type LensGetter s a = s -> a
 
+type LensSetter s a = a -> s -> s
+
 xGetter :: LensGetter Foo Int
 xGetter = _x
+
+xSetter :: LensSetter Foo Int
+xSetter x foo = foo { _x = x}
 
 dataGetter :: LensGetter Bar String
 dataGetter = _data
@@ -25,5 +30,5 @@ barGetter = _bar
 (^.) :: s -> LensGetter s a -> a
 s ^. f = f s
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+(.~) :: LensSetter s a -> a -> s -> s
+f .~ a = f a
