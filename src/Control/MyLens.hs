@@ -19,6 +19,9 @@ xGetter = _x
 dataGetter :: LensGetter Bar String
 dataGetter = _data
 
+barGetter :: LensGetter Foo Bar
+barGetter = _bar
+
 (^.) :: s -> LensGetter s a -> a
 s ^. f = f s
 
