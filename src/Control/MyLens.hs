@@ -8,27 +8,22 @@ data Foo = Foo
 
 data Bar = Bar
   { _label :: String
-  , _data  :: String
+  , _body  :: String
   } deriving Show
 
-type LensGetter s a = s -> a
+type Lens s a = (a -> a) -> s -> (a, s)
 
-type LensSetter s a = a -> s -> s
+x :: Lens Foo Int
+x f s = (_x s, s { _x = f (_x s) })
 
-xGetter :: LensGetter Foo Int
-xGetter = _x
+body :: Lens Bar String
+body f s = (_body s, s { _body = f (_body s) })
 
-xSetter :: LensSetter Foo Int
-xSetter x foo = foo { _x = x}
+bar :: Lens Foo Bar
+bar f s = (_bar s, s { _bar = f (_bar s) })
 
-dataGetter :: LensGetter Bar String
-dataGetter = _data
+(^.) :: s -> Lens s a -> a
+s ^. f = fst $ f id s
 
-barGetter :: LensGetter Foo Bar
-barGetter = _bar
-
-(^.) :: s -> LensGetter s a -> a
-s ^. f = f s
-
-(.~) :: LensSetter s a -> a -> s -> s
-f .~ a = f a
+(.~) :: Lens s a -> a -> s -> s
+f .~ a = snd . f (const a)
