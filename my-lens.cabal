@@ -35,5 +35,8 @@ test-suite my-lens-test
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
-    main-is:          MyLensTest.hs
+    main-is:          Spec.hs
     build-depends:    base ^>=4.16.4.0
+                    , my-lens
+                    , hspec ^>= 2.11
+    build-tool-depends: hspec-discover:hspec-discover == 2.*
