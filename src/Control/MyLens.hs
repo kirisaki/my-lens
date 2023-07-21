@@ -1,4 +1,6 @@
 module Control.MyLens where
+import           Control.Applicative   (Const (Const, getConst))
+import           Data.Functor.Identity (Identity (Identity, runIdentity))
 
 data Foo = Foo
   { _x   :: Int
@@ -11,19 +13,19 @@ data Bar = Bar
   , _body  :: String
   } deriving Show
 
-type Lens s a = (a -> a) -> s -> (a, s)
+type Lens f s a = (a -> f a) -> s -> f s
 
-x :: Lens Foo Int
-x f s = (_x s, s { _x = f (_x s) })
+x :: Functor f => Lens f Foo Int
+x f s = fmap (\a -> s { _x = a}) (f(_x s))
 
-body :: Lens Bar String
-body f s = (_body s, s { _body = f (_body s) })
+body :: Functor f => Lens f Bar String
+body f s = fmap (\a -> s { _body = a}) (f(_body s))
 
-bar :: Lens Foo Bar
-bar f s = (_bar s, s { _bar = f (_bar s) })
+bar :: Functor f =>  Lens f Foo Bar
+bar f s = fmap (\a -> s { _bar = a}) (f(_bar s))
 
-(^.) :: s -> Lens s a -> a
-s ^. f = fst $ f id s
+(^.) :: s -> Lens (Const a) s a -> a
+s ^. f =  getConst $ f Const s
 
-(.~) :: Lens s a -> a -> s -> s
-f .~ a = snd . f (const a)
+(.~) :: Lens Identity s a -> a -> s -> s
+f .~ a = runIdentity . f (\_ -> Identity a)
